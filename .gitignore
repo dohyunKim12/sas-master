@@ -1,0 +1,10 @@
+# Ignore Gradle project-specific cache directory
+.gradle
+.idea
+.vscode
+
+# Ignore Gradle build output directory
+bin
+
+# Ignore Log files
+WEB-INF
