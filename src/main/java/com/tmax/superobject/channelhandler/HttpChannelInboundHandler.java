@@ -6,6 +6,7 @@ import com.tmax.superobject.logger.SuperAppDefaultLogger;
 import com.tmax.superobject.object.MessageObject;
 import com.tmax.superobject.service.saveJar;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.CompositeByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
@@ -28,15 +29,9 @@ public class HttpChannelInboundHandler extends ChannelInboundHandlerAdapter {
             HttpHeaders headers = httpRequest.headers();
             logger.info("incomming http request : " + httpRequest);
 
-            JsonObject jsonObject = new Gson().fromJson(httpRequest.content().toString(Charset.defaultCharset()),
-                    JsonObject.class);
-            MessageObject messageObject = MessageObject.newInstanceFromJsonObject(jsonObject);
-
-            logger.info("http header:" + headers);
-            logger.info("jsonobject:" + jsonObject);
-            logger.info("msgobject:" + messageObject);
-            saveJar.save();
-
+            if (headers.get("targetServiceName").equals("saveJar")){
+                saveJar.save((CompositeByteBuf)httpRequest.content()); // call save() method with parameter(http body)
+            }
         };
     }
 }
