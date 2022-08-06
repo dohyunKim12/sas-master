@@ -1,18 +1,18 @@
 package com.tmax.superobject.channelhandler;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.tmax.superobject.logger.SuperAppDefaultLogger;
-import com.tmax.superobject.object.MessageObject;
-import com.tmax.superobject.service.saveJar;
-import io.netty.buffer.ByteBuf;
+import com.tmax.superobject.object.AbstractBodyObject;
+import com.tmax.superobject.object.BodyObject;
+import com.tmax.superobject.object.DefaultBodyObject;
+import com.tmax.superobject.service.SaveJar;
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
 import org.slf4j.Logger;
 
-import java.nio.charset.Charset;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 public class HttpChannelInboundHandler extends ChannelInboundHandlerAdapter {
     private static Logger logger = SuperAppDefaultLogger.getInstance().getLogger(HttpChannelInboundHandler.class.getName());
@@ -24,13 +24,19 @@ public class HttpChannelInboundHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
+        logger.warn("type of msg:" + msg.getClass().getName());
         if (msg instanceof FullHttpRequest) {
             FullHttpRequest httpRequest = (FullHttpRequest) msg;
             HttpHeaders headers = httpRequest.headers();
             logger.info("incomming http request : " + httpRequest);
 
             if (headers.get("targetServiceName").equals("saveJar")){
-                saveJar.save((CompositeByteBuf)httpRequest.content()); // call save() method with parameter(http body)
+                SaveJar saveJar = new SaveJar();
+                DefaultBodyObject defaultBodyObject = new DefaultBodyObject((CompositeByteBuf) httpRequest.content());
+                logger.info("type of content : " + httpRequest.content().getClass().getName());
+                logger.info("content: " + httpRequest.content().toString(StandardCharsets.UTF_8));
+                logger.info("defualtBodyObject: " + defaultBodyObject.getCompositeByteBuf());
+                saveJar.service(defaultBodyObject);
             }
         };
     }
