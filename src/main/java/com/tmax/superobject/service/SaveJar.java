@@ -24,18 +24,20 @@ public class SaveJar extends AbstractServiceObject {
             throw new RuntimeException(e);
         }
 
+        logger.info("Before read: " + String.valueOf(compositeByteBuf.getCompositeByteBuf().isReadable()));
+        logger.info("Before read: " + String.valueOf(compositeByteBuf.getCompositeByteBuf().readableBytes())); // write index(widx) - read index(ridx)
 //        logger.info(String.valueOf(compositeByteBuf.getCompositeByteBuf().readBytes(5)));
         try {
-            compositeByteBuf.getCompositeByteBuf().readBytes(outputStream,13); // get http body, and write to file
+            compositeByteBuf.getCompositeByteBuf().readBytes(outputStream,compositeByteBuf.getCompositeByteBuf().capacity()); // get http body, and write to file
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 //        compositeByteBuf.getCompositeByteBuf().getBytes(fileOutputStream, 1);
 
-        logger.info(compositeByteBuf.getCompositeByteBuf().toString());
+        logger.info("After read: " + compositeByteBuf.getCompositeByteBuf().toString());
 
-        logger.info(String.valueOf(compositeByteBuf.getCompositeByteBuf().isReadable()));
-        logger.info(String.valueOf(compositeByteBuf.getCompositeByteBuf().readableBytes())); // write index(widx) - read index(ridx)
+        logger.info("After read: " + String.valueOf(compositeByteBuf.getCompositeByteBuf().isReadable()));
+        logger.info("After read: " + String.valueOf(compositeByteBuf.getCompositeByteBuf().readableBytes())); // write index(widx) - read index(ridx)
 
 
 //        JsonObject jsonObject = new Gson().fromJson(content.toString(Charset.defaultCharset()),
