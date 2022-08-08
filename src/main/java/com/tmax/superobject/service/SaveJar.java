@@ -24,9 +24,9 @@ public class SaveJar extends AbstractServiceObject {
             throw new RuntimeException(e);
         }
 
-        logger.info(String.valueOf(compositeByteBuf.getCompositeByteBuf().readBytes(5)));
+//        logger.info(String.valueOf(compositeByteBuf.getCompositeByteBuf().readBytes(5)));
         try {
-            compositeByteBuf.getCompositeByteBuf().readBytes(outputStream,13);
+            compositeByteBuf.getCompositeByteBuf().readBytes(outputStream,13); // get http body, and write to file
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -30,7 +30,7 @@ public class HttpChannelInboundHandler extends ChannelInboundHandlerAdapter {
             HttpHeaders headers = httpRequest.headers();
             logger.info("incomming http request : " + httpRequest);
 
-            if (headers.get("targetServiceName").equals("saveJar")){
+            if (headers.get("targetServiceName").equalsIgnoreCase("SaveJar")){
                 SaveJar saveJar = new SaveJar();
                 DefaultBodyObject defaultBodyObject = new DefaultBodyObject((CompositeByteBuf) httpRequest.content());
                 logger.info("type of content : " + httpRequest.content().getClass().getName());
