@@ -31,6 +31,8 @@ public class HttpChannelInboundHandler extends ChannelInboundHandlerAdapter {
             HttpHeaders headers = httpRequest.headers();
             logger.info("type of http Header:" + headers.getClass().getName());
 //            logger.info("incomming http request : " + httpRequest);
+            JsonObject jsonObject = HttpUtils.prepareJsonRequest(httpRequest) ;
+            MessageObject messageObject = MessageObject.newInstanceFromJsonObject(jsonObject);
 
             if (headers.get("targetServiceName").equalsIgnoreCase("SaveJar")){
 
@@ -40,8 +42,9 @@ public class HttpChannelInboundHandler extends ChannelInboundHandlerAdapter {
 //                defaultHeaderObject.setJsonObject(headers);
                 logger.info("type of content : " + httpRequest.content().getClass().getName());
                 logger.info("defualtBodyObject: " + defaultBodyObject.getCompositeByteBuf());
-                String fileName = headers.get("fileName");
-                saveJar.service(defaultBodyObject, fileName);
+//                String fileName = headers.get("fileName");
+//                saveJar.service(defaultBodyObject, fileName);
+                saveJar.service(messageObject.body());
             }
         };
     }

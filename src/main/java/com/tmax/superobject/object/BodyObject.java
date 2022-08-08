@@ -11,5 +11,6 @@ public interface BodyObject {
     public ByteBuffer getByteBuffer();
     public void setByteBuffer(ByteBuffer byteBuffer);
     public CompositeByteBuf getCompositeByteBuf();
+    public void setBodyClass(Class<? extends BodyObject> bodyClass);
     public void setCompositeByteBuf(CompositeByteBuf compositeByteBuf);
 }

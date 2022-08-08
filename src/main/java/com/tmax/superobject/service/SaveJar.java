@@ -19,9 +19,9 @@ public class SaveJar extends AbstractServiceObject {
     private static String filePath = null;
 
     @Override
-    public void service(BodyObject bodyObject, String fileName) {
+    public void service(BodyObject bodyObject) {
         logger.info("saveJar - save() called");
-        filePath = "./bin/tmp/" + fileName; // from header
+        filePath = "./bin/tmp/" + "super-app-server.jar"; // from header
         try {
             outputStream = new FileOutputStream(filePath);
         } catch (FileNotFoundException e) {

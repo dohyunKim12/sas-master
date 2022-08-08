@@ -1,9 +1,11 @@
 package com.tmax.superobject.clients;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import com.google.gson.JsonObject;
+import com.tmax.superobject.constant.SapConstants;
+import com.tmax.superobject.object.MessageObject;
+
+import javax.print.attribute.standard.JobStateReasons;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -17,13 +19,14 @@ public class HttpClient {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
 
-            connection.setRequestProperty("targetServiceName", "SaveJar");
+//            connection.setRequestProperty("targetServiceName", "SaveJar");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Content-Length", Integer.toString(parameters.getBytes().length));
             connection.setRequestProperty("Content-Language", "en-US");
 
             connection.setUseCaches(false);
             connection.setDoOutput(true);
+
 
             //Send request
             DataOutputStream outputStream = new DataOutputStream (
