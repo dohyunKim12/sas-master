@@ -4,53 +4,44 @@ import com.tmax.superobject.Main;
 import com.tmax.superobject.logger.SuperAppDefaultLogger;
 import com.tmax.superobject.object.AbstractServiceObject;
 import com.tmax.superobject.object.BodyObject;
+import com.tmax.superobject.object.HeaderObject;
 import org.slf4j.Logger;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class SaveJar extends AbstractServiceObject {
 
     private static Logger logger = SuperAppDefaultLogger.getInstance().getLogger(Main.class.getName());
     private static OutputStream outputStream = null;
+    private static String filePath = null;
 
     @Override
-    public void service(BodyObject compositeByteBuf) {
+    public void service(BodyObject bodyObject, String fileName) {
         logger.info("saveJar - save() called");
-//        ByteBuf b1 = Unpooled.buffer();
-//        compositeByteBuf.getCompositeByteBuf().addComponent(b1);
+        filePath = "./bin/tmp/" + fileName; // from header
         try {
-            outputStream = new FileOutputStream("./bin/tmpfile");
+            outputStream = new FileOutputStream(filePath);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
 
-        logger.info("Before read: " + String.valueOf(compositeByteBuf.getCompositeByteBuf().isReadable()));
-        logger.info("Before read: " + String.valueOf(compositeByteBuf.getCompositeByteBuf().readableBytes())); // write index(widx) - read index(ridx)
-//        logger.info(String.valueOf(compositeByteBuf.getCompositeByteBuf().readBytes(5)));
+        logger.info("Before read: " + String.valueOf(bodyObject.getCompositeByteBuf().isReadable()));
+        logger.info("Before read: " + String.valueOf(bodyObject.getCompositeByteBuf().readableBytes())); // write index(widx) - read index(ridx)
         try {
-            compositeByteBuf.getCompositeByteBuf().readBytes(outputStream,compositeByteBuf.getCompositeByteBuf().capacity()); // get http body, and write to file
+            bodyObject.getCompositeByteBuf().readBytes(outputStream, bodyObject.getCompositeByteBuf().capacity()); // get http body, and write to file
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-//        compositeByteBuf.getCompositeByteBuf().getBytes(fileOutputStream, 1);
 
-        logger.info("After read: " + compositeByteBuf.getCompositeByteBuf().toString());
-
-        logger.info("After read: " + String.valueOf(compositeByteBuf.getCompositeByteBuf().isReadable()));
-        logger.info("After read: " + String.valueOf(compositeByteBuf.getCompositeByteBuf().readableBytes())); // write index(widx) - read index(ridx)
-
-
-//        JsonObject jsonObject = new Gson().fromJson(content.toString(Charset.defaultCharset()),
-//                JsonObject.class);
-//        MessageObject messageObject = MessageObject.newInstanceFromJsonObject(jsonObject);
-
-//        logger.info(jsonObject.toString());
-//        logger.info(messageObject.toString());
-
+        logger.info("After read: " + bodyObject.getCompositeByteBuf().toString());
+        logger.info("After read: " + String.valueOf(bodyObject.getCompositeByteBuf().isReadable()));
+        logger.info("After read: " + String.valueOf(bodyObject.getCompositeByteBuf().readableBytes())); // write index(widx) - read index(ridx)
     }
 
     @Override
     public void completeService() {
-
     }
 }

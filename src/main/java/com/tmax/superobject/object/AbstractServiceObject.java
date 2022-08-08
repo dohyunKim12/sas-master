@@ -14,6 +14,15 @@ public abstract class AbstractServiceObject implements ServiceObject {
         return completed;
     }
 
+    @Override
+    public void service(BodyObject message) {
+        return;
+    };
+
+    @Override
+    public void service(BodyObject message, String fileName) {
+        return;
+    };
     protected void setReply(BodyObject responseBody) {
         if (!completed) {
             this.replyObject = responseBody;

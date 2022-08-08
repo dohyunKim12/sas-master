@@ -1,4 +1,4 @@
-package com.tmax.superobject.service;
+package com.tmax.superobject.clients;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -18,9 +18,9 @@ public class HttpClient {
             connection.setRequestMethod("POST");
 
             connection.setRequestProperty("targetServiceName", "SaveJar");
-//            connection.setRequestProperty("Content-Type", "application/json");
-//            connection.setRequestProperty("Content-Length", Integer.toString(parameters.getBytes().length));
-//            connection.setRequestProperty("Content-Language", "en-US");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Content-Length", Integer.toString(parameters.getBytes().length));
+            connection.setRequestProperty("Content-Language", "en-US");
 
             connection.setUseCaches(false);
             connection.setDoOutput(true);
@@ -53,14 +53,7 @@ public class HttpClient {
             }
         }
     }
-    public static void main(String[] args) throws Exception{
-        try{
-            HttpClient.testHttpRequest("http://127.0.0.1:8080", "dohyun'sExampleParameter");
-
-        }finally {
-
-        }
-
+    public static void main(String[] args) {
+        HttpClient.testHttpRequest("http://127.0.0.1:8080", "dohyun'sExampleParameter");
     }
 }
-

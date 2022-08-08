@@ -1,10 +1,7 @@
-package com.tmax.superobject.service;
+package com.tmax.superobject.clients;
 
 import com.tmax.superobject.Main;
 import com.tmax.superobject.logger.SuperAppDefaultLogger;
-import org.apache.http.HttpEntity;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
 import org.slf4j.Logger;
 
 import java.io.*;
@@ -13,10 +10,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import org.apache.http.entity.*;
 
 public class HttpSendFileClient {
-    private static Logger logger = SuperAppDefaultLogger.getInstance().getLogger(Main.class.getName());
+    private static Logger logger = SuperAppDefaultLogger.getInstance().getLogger(HttpSendFileClient.class.getName());
     public static String httpSendRequest(String targetURL) {
         HttpURLConnection connection = null;
         String charset = "UTF-8";
@@ -61,16 +57,10 @@ public class HttpSendFileClient {
 //            writer.append(CRLF).flush(); // CRLF is important! It indicates end of boundary.
 
             // Send binary file.
-//            writer.append("--" + boundary).append(CRLF);
-//            writer.append("Content-Disposition: form-data; name=\"binaryFile\"; filename=\"" + binaryFile.getName() + "\"").append(CRLF);
             logger.info("sendfile: " + binaryFile.getName());
             logger.info("Content-type of sending file: " + URLConnection.guessContentTypeFromName(binaryFile.getName()));
-//            writer.append("Content-Type: application/java-archive").append(CRLF);
-//            writer.append("Content-Transfer-Encoding: binary").append(CRLF);
-//            writer.append(CRLF).flush();
             Files.copy(binaryFile.toPath(), outputStream);
-            outputStream.flush(); // Important before continuing with writer!
-//            writer.append(CRLF).flush(); // CRLF is important! It indicates end of boundary.
+            outputStream.flush();
 
             // End of multipart/form-data.
 //            writer.append("\n--" + boundary + "--").append(CRLF).flush();

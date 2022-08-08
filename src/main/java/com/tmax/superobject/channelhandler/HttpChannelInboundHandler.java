@@ -1,14 +1,15 @@
 package com.tmax.superobject.channelhandler;
 
+import com.google.gson.JsonObject;
 import com.tmax.superobject.logger.SuperAppDefaultLogger;
-import com.tmax.superobject.object.AbstractBodyObject;
-import com.tmax.superobject.object.BodyObject;
-import com.tmax.superobject.object.DefaultBodyObject;
+import com.tmax.superobject.object.*;
 import com.tmax.superobject.service.SaveJar;
+import com.tmax.superobject.util.HttpUtils;
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
+import io.netty.util.concurrent.ImmediateEventExecutor;
 import org.slf4j.Logger;
 
 import java.nio.ByteBuffer;
@@ -28,15 +29,19 @@ public class HttpChannelInboundHandler extends ChannelInboundHandlerAdapter {
         if (msg instanceof FullHttpRequest) {
             FullHttpRequest httpRequest = (FullHttpRequest) msg;
             HttpHeaders headers = httpRequest.headers();
-            logger.info("incomming http request : " + httpRequest);
+            logger.info("type of http Header:" + headers.getClass().getName());
+//            logger.info("incomming http request : " + httpRequest);
 
             if (headers.get("targetServiceName").equalsIgnoreCase("SaveJar")){
+
                 SaveJar saveJar = new SaveJar();
                 DefaultBodyObject defaultBodyObject = new DefaultBodyObject((CompositeByteBuf) httpRequest.content());
+                DefaultHeaderObject defaultHeaderObject = new DefaultHeaderObject();
+//                defaultHeaderObject.setJsonObject(headers);
                 logger.info("type of content : " + httpRequest.content().getClass().getName());
-                logger.info("content: " + httpRequest.content().toString(StandardCharsets.UTF_8));
                 logger.info("defualtBodyObject: " + defaultBodyObject.getCompositeByteBuf());
-                saveJar.service(defaultBodyObject);
+                String fileName = headers.get("fileName");
+                saveJar.service(defaultBodyObject, fileName);
             }
         };
     }
