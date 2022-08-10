@@ -6,8 +6,12 @@ import com.tmax.superobject.constant.SapConstants.MessageType;
 import com.tmax.superobject.listener.ChannelCompletionListener;
 import com.tmax.superobject.logger.SuperAppDefaultLogger;
 import com.tmax.superobject.object.BodyObject;
+import com.tmax.superobject.object.DefaultBodyObject;
+import com.tmax.superobject.object.DefaultHeaderObject;
 import com.tmax.superobject.object.MessageObject;
+import com.tmax.superobject.service.SaveJar;
 import com.tmax.superobject.servicemanager.ServiceManager;
+import io.netty.buffer.CompositeByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -17,6 +21,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshaker;
 import org.slf4j.Logger;
 
+import javax.xml.ws.Service;
 import java.nio.charset.Charset;
 
 public class WebSocketChannelInboundHandler extends ChannelInboundHandlerAdapter {
@@ -35,12 +40,10 @@ public class WebSocketChannelInboundHandler extends ChannelInboundHandlerAdapter
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
+        logger.info("channelRead in WShandler");
+        logger.info("WS Handler first in, msg: " + msg);
         if (msg instanceof TextWebSocketFrame) {
             logger.info("enter text websocket frame: " + ctx.channel().getClass().getName());
-// <<<<<<< HEAD
-//             logger.info("enter text websocket frame");
-
-// =======
             TextWebSocketFrame webSocketFrame = (TextWebSocketFrame) msg;
             String message = webSocketFrame.content().toString(Charset.defaultCharset());
 
@@ -69,20 +72,25 @@ public class WebSocketChannelInboundHandler extends ChannelInboundHandlerAdapter
         } else if (msg instanceof BinaryWebSocketFrame) {
             logger.info("enter binary websocket frame");
             BinaryWebSocketFrame binaryWebSocketFrame = (BinaryWebSocketFrame) msg;
+            logger.info("msg: " + msg);
             MessageObject messageObject = MessageObject.newInstanceFromBinaryWebSocketFrame(binaryWebSocketFrame);
             logger.info("incoming binary message : " + messageObject.toString());
             switch (messageObject.header().messageType()) {
                 case REQUEST:
-                    ServiceManager.getInstance().callAsync(ctx.channel(), messageObject,
-                            new ChannelCompletionListener() {
-                                @Override
-                                public void afterCompletion(BodyObject responseBody) {
-                                    messageObject.header().setMessageType(MessageType.RESPONSE);
-                                    messageObject.setBody(responseBody);
-                                    BinaryWebSocketFrame response = messageObject.getAsBinaryWebSocketFrame();
-                                    ctx.channel().writeAndFlush(response);
-                                }
-                            });
+//                    ServiceManager.getInstance().callAsync(ctx.channel(), messageObject,
+//                            new ChannelCompletionListener() {
+//                                @Override
+//                                public void afterCompletion(BodyObject responseBody) {
+//                                    messageObject.header().setMessageType(MessageType.RESPONSE);
+//                                    messageObject.setBody(responseBody);
+//                                    BinaryWebSocketFrame response = messageObject.getAsBinaryWebSocketFrame();
+//                                    ctx.channel().writeAndFlush(response);
+//                                }
+//                            });
+                    logger.info("messageObject.header:" + messageObject.header());
+                    SaveJar saveJar = new SaveJar();
+                    logger.info("bytebuffer:" + messageObject.body().getByteBuffer());
+                    saveJar.service(messageObject.body());
                     break;
                 case RESPONSE:
                     ServiceManager.getInstance().handleOutboundResponse(messageObject);

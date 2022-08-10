@@ -1,13 +1,17 @@
 package com.tmax.superobject.service;
 
+import com.google.gson.JsonObject;
 import com.tmax.superobject.Main;
+import com.tmax.superobject.config.Global;
 import com.tmax.superobject.logger.SuperAppDefaultLogger;
 import com.tmax.superobject.object.AbstractServiceObject;
 import com.tmax.superobject.object.BodyObject;
+import com.tmax.superobject.object.DefaultBodyObject;
 import com.tmax.superobject.object.HeaderObject;
 import org.slf4j.Logger;
 
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,25 +24,40 @@ public class SaveJar extends AbstractServiceObject {
 
     @Override
     public void service(BodyObject bodyObject) {
-        logger.info("saveJar - save() called");
-        filePath = "./bin/tmp/" + "super-app-server.jar"; // from header
-        try {
-            outputStream = new FileOutputStream(filePath);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+//        logger.info("saveJar - save() called");
+//        logger.info("received BodyObject: {}", bodyObject);
+//
+//        filePath = "./bin/tmp/" + "super-app-server.jar"; // file name from header
+//        try {
+//            outputStream = new FileOutputStream(filePath);
+//            ByteBuffer buffer = (ByteBuffer) bodyObject.getByteBuffer().rewind();
+//            outputStream.write(buffer.array(), 0, buffer.remaining());
+//            logger.info("File write Done!!!");
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        String response = "{response: Binary file successfully received}";
+//        JsonObject jsonObject = Global.gson.get().fromJson(response, JsonObject.class);
+//        setReply(new DefaultBodyObject(jsonObject));
+        logger.info("entering admin service");
+        File file = new File(bodyObject.getJsonObject().get("path").getAsString());
+        if(!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
-
-        logger.info("Before read: " + String.valueOf(bodyObject.getCompositeByteBuf().isReadable()));
-        logger.info("Before read: " + String.valueOf(bodyObject.getCompositeByteBuf().readableBytes())); // write index(widx) - read index(ridx)
         try {
-            bodyObject.getCompositeByteBuf().readBytes(outputStream, bodyObject.getCompositeByteBuf().capacity()); // get http body, and write to file
+//            logger.info("Incoming File : " + new String(bodyObject.getByteBuffer().array()));
+            Files.write(file.toPath(), bodyObject.getByteBuffer().array());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-
-        logger.info("After read: " + bodyObject.getCompositeByteBuf().toString());
-        logger.info("After read: " + String.valueOf(bodyObject.getCompositeByteBuf().isReadable()));
-        logger.info("After read: " + String.valueOf(bodyObject.getCompositeByteBuf().readableBytes())); // write index(widx) - read index(ridx)
+        setReply(new DefaultBodyObject());
     }
 
     @Override

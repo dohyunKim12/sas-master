@@ -47,7 +47,7 @@ public class SuperAppMasterServer {
             protected void initChannel(Channel ch) throws Exception {
                 ChannelPipeline pipeline = ch.pipeline();
                 pipeline.addLast(new HttpServerCodec());
-                pipeline.addLast(new HttpObjectAggregator(1048576000));
+                pipeline.addLast(new HttpObjectAggregator(104857600));
                 pipeline.addLast(new HttpChannelInboundHandler());
             }
         });

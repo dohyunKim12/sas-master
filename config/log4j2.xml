@@ -32,7 +32,7 @@
         <!-- =================================================================== -->
         <!-- netty specific Logger setting								         -->
         <!-- =================================================================== -->
-        <logger name="io.netty" level="off" additivity="false">
+        <logger name="io.netty" level="all" additivity="false">
             <AppenderRef ref="console" /> <!-- 콘솔에 로그 찍겠단 뜻 -->
             <AppenderRef ref="file" />	  <!-- 파일에 로그 찍겠단 뜻 -->
         </logger>

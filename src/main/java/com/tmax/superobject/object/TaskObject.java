@@ -117,6 +117,7 @@ public class TaskObject implements Runnable {
             NoSuchMethodException, SecurityException {
         TaskObject taskObject = null;
         try {
+            logger.info("Global.getInstance.URLClassLoader: "+Global.getInstance().getServiceClassLoader());
             Class<?> clazz = Global.getInstance().getServiceClassLoader()
                     .loadClass(messageObject.header().targetServiceName());
             ServiceObject serviceObject = (ServiceObject) clazz.getDeclaredConstructor().newInstance();

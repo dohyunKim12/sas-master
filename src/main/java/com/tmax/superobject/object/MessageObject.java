@@ -37,6 +37,7 @@ public class MessageObject {
         header.setContentType(ContentType.TEXT);
         BodyObject body = new DefaultBodyObject();
         body.setJsonObject(bodyJson);
+//        body.setByteBuffer(bodyJson.);
         return new MessageObject(header, body);
     }
 
